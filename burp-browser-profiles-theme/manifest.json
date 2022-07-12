@@ -1,0 +1,17 @@
+{
+   	"name": "Burp browser profiles theme",
+   	"version": "1.0",
+	"manifest_version": 2,
+   	"theme": {
+		"images": {
+		},
+		"colors": {
+			"frame" : [ 255, 0, 0 ]
+		},
+		"tints": {
+		},
+		"properties" : {
+
+		}
+	}
+}

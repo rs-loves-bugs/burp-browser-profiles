@@ -1,0 +1,10 @@
+{
+  "name": "Burp browser profiles color extension",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": ["<all_urls>", "webRequest", "webRequestBlocking"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  }
+}
