@@ -2,25 +2,27 @@
 
 ![feature image](https://i.imgur.com/cOAlfyI.png)
 
-burp-browser-profiles is a small shell script utility that will help you make better use of the embedded browser that comes by default with Burp. Inspired by [PwnFox](https://github.com/yeswehack/PwnFox)
+burp-browser-profiles is a small shell script utility that will help you make better use of the embedded browser that comes by default with Burp. This is heavily inspired by [PwnFox](https://github.com/yeswehack/PwnFox), I wanted to have a similar tool to use with the embedded Burp browser
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/rs_loves_bugs?style=flat-square)](https://twitter.com/rs_loves_bugs)
 
 ## Features:
 
--allows you to create and mantain multiple burp browser profiles
+-allows you to create and mantain multiple Burp browser profiles
 
--allows you to run multiple burp browser instances at the same time with different profiles
+-allows you to run multiple Burp browser instances at the same time with different profiles
 
--allows you to specify a different proxy server for every burp browser instance you have running
+-allows you to specify a different proxy server for every Burp browser instance you have running
 
--allows you to specify a custom user agent for every burp browser instance you have running
+-allows you to specify a custom user agent for every Burp browser instance you have running
 
--allows you to diferenciate the profiles between them with a different color used for the burp browser window frame(blue, cyan, green, yellow, orange, red, magenta, pink)
+-allows you to differenciate the profiles between them with a different color used for the Burp browser window frame(blue, cyan, green, yellow, orange, red, magenta, pink)
 
 -allows you in Burp to highlight with the same color the request from that specific profile(this feature requires installing a Burp extension)
 
 # Instalation:
 
-burp-browser-profiles was tested on Mac and Linux and will work with either Burp Proffesional or Burp Community Edition
+burp-browser-profiles was tested on Mac and Linux and will work with either Burp Professional or Burp Community Edition
 
 ```
 git clone https://github.com/rs-loves-bugs/burp-browser-profiles
@@ -48,7 +50,7 @@ Syntax: ./burp-browser-profiles [options]
     -u <user_agent>              Specify an user agent to use
 
     -L                           List available profiles
-    -D <profile_name>"           Delete a profile
+    -D <profile_name>            Delete a profile
     -h                           Help
 ```
 
@@ -86,6 +88,9 @@ Delete a profile:
 ```
 ./burp-browser-profiles -D testing
 ```
+# TODO
+
+Port to a Burp extension
 
 
 
