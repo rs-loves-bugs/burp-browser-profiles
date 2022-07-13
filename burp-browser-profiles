@@ -8,6 +8,7 @@ Syntax: ./$(basename $0) [options]
     -p <adress:port>             Specify a proxy server to use, will use localhost:8080 by default
     -c <color_name>              Specify a color to use(blue, cyan, green, yellow, orange, red, magenta, pink), no color is used by default
     -u <user_agent>              Specify an user agent to use
+    -x                           Disable the proxy
     
     -L                           List available profiles
     -D <profile_name>            Delete a profile
@@ -17,13 +18,13 @@ EOM
 
 [ $# -eq 0 ] && { usage; exit 1; }
 
-if [[ ! -d "$HOME/.BurpSuite/burpbrowser" ]] || [[ ! -d "$HOME/.BurpSuite/pre-wired-browser" ]]
+if [[ ! -d "$HOME/.BurpSuite/pre-wired-browser" ]]
 then
-  echo "Can't find the Burp browser directory, open the browser from Burp and try again"
-  exit 1
+  echo "Can't find the Burp browser profile directory, you need to start the embedded browser once so it will be created(open Burp -> Proxy -> Open Browser). You will only need to do this once."
+  exit
 fi
 
-while getopts ':p:u:h:P:c:LD:' opt; do
+while getopts ':p:u:h:P:c:LxD:' opt; do
   case "$opt" in
     p)
       proxyserver="$OPTARG"
@@ -40,23 +41,32 @@ while getopts ':p:u:h:P:c:LD:' opt; do
     L)
       listprofiles=""
       ;;
+    x)
+      noproxy=""
+      ;;
     D)
       deleteprofile="$OPTARG"
       ;;
     h)
-      usage; exit 0
+      usage; exit
       ;;
     :)
-      echo -e "option requires an argument.\n"; usage; exit 1
+      echo -e "option requires an argument.\n"; usage; exit
       ;;
     ?)
-      echo -e "Invalid command option.\n"; usage; exit 1
+      echo -e "Invalid command option.\n"; usage; exit
       ;;
   esac
 done
 shift "$(($OPTIND -1))"
 
-if [[ -z ${profilename+x} ]] && [[ ! -d "$HOME/.BurpSuite/burp-browser-profiles" ]]
+if [[ -n $proxyserver ]] && [[ -n ${noproxy+x} ]]
+then
+  echo "Conflicting arguments, you can't run with both -p and -x arguments at the same time"
+  exit
+fi 
+
+if [[ -z $profilename ]] && [[ ! -d "$HOME/.BurpSuite/burp-browser-profiles" ]]
 then
   echo "It looks like you did not created any profile yet, run the command again with -P profile_name to create a profile"
   exit
@@ -65,7 +75,7 @@ fi
 if [[ -n ${listprofiles+x} ]]
 then
   echo -e "Available profiles:\n"
-  find $HOME/.BurpSuite/burp-browser-profiles -mindepth 1 -maxdepth 1 -type d -printf '%f\n'
+  ls -1 $HOME/.BurpSuite/burp-browser-profiles/
   exit
 fi  
 
@@ -80,12 +90,6 @@ then
     exit
   fi
 fi
-
-if [[ -z ${profilename+x} ]]
-then
-  echo "-P profile name argument is required"
-  exit
-fi 
 
 if [[ ! -d "$HOME/.BurpSuite/burp-browser-profiles_data" ]]
 then
@@ -104,11 +108,6 @@ then
   cp -r "$HOME/.BurpSuite/pre-wired-browser" "$HOME/.BurpSuite/burp-browser-profiles/$profilename"
   cp -r "$HOME/.BurpSuite/burp-browser-profiles_data/burp-browser-profiles-theme" "$HOME/.BurpSuite/burp-browser-profiles/$profilename/burp-browser-profiles-theme" 
   cp -r "$HOME/.BurpSuite/burp-browser-profiles_data/burp-browser-profiles-extension" "$HOME/.BurpSuite/burp-browser-profiles/$profilename/burp-browser-profiles-extension" 
-fi
-
-if [[ ! -n $proxyserver ]] || ([[ "$proxyserver" == "localhost:8080" ]] || [[ "$proxyserver" == "127.0.0.1:8080" ]])
-then
-  proxyserver="localhost:8080"
 fi
 
 datadir="$HOME/.BurpSuite/burp-browser-profiles/$profilename"
@@ -145,7 +144,7 @@ then
   perl -pi -e "s/^.*frame.*$/$rgb_color/" $datadir/burp-browser-profiles-theme/manifest.json
 
   extension_color="var color = \'$(echo $headercolor|cut -d":" -f 1)\';"
-  perl -pi -e "s/^.*frame.*$/$extension_color/" $datadir/burp-browser-profiles-extension/background.js
+  perl -pi -e "s/^.*var color.*$/$extension_color/" $datadir/burp-browser-profiles-extension/background.js
 
   loadextension_arg="--load-extension=$HOME/.BurpSuite/burp-chromium-extension,$datadir/burp-browser-profiles-theme,$datadir/burp-browser-profiles-extension"
 else
@@ -158,12 +157,14 @@ fi
 
 if [[ -n $useragent ]]
 then
-  useragent_arg="--user-agent="
-  useragent_arg+="$useragent"
-else
-  useragent_arg=""
+  useragent_arg="--user-agent=$(echo $useragent)"
 fi
 
-latestversion="$(ls -td -- $HOME/.BurpSuite/burpbrowser/* | head -n 1)"
-
-$latestversion/chrome "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" --remote-debugging-port=0 --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --use-gl=angle --useangle=swiftshader-webgl --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+if [ "$(uname)" == "Darwin" ]; 
+then
+  latest_browser_path="$(ls -td -- /Applications/Burp\ Suite\ */Contents/Resources/app/burpbrowser/* | head -n 1)/Chromium.app/Contents/MacOS/Chromium"
+  "$latest_browser_path" "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" --remote-debugging-port=0 --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+else
+  latest_browser_path="$(ls -td -- $HOME/.BurpSuite/burpbrowser/* | head -n 1)/chrome"
+  "$latest_browser_path" "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" --remote-debugging-port=0 --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --use-gl=angle --useangle=swiftshader-webgl --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+fi

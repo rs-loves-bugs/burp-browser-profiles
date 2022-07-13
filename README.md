@@ -79,6 +79,11 @@ Open and run an existing profile with a custom proxy:
 ./burp-browser-profiles -P testing -p localhost:9999
 ```
 
+Open and run an existing profile with no proxy settings:
+```
+./burp-browser-profiles -P testing -x
+```
+
 Open and run an existing profile with a custom user agent:
 ```
 ./burp-browser-profiles -P testing -u "my user agent"
