@@ -17,6 +17,12 @@ EOM
 
 [ $# -eq 0 ] && { usage; exit 1; }
 
+if [[ ! -d "$HOME/.BurpSuite/burpbrowser" ]] || [[ ! -d "$HOME/.BurpSuite/pre-wired-browser" ]]
+then
+  echo "Can't find the Burp browser directory, open the browser from Burp and try again"
+  exit 1
+fi
+
 while getopts ':p:u:h:P:c:LD:' opt; do
   case "$opt" in
     p)
@@ -136,20 +142,16 @@ then
   esac
 
   rgb_color="\"frame\" : $(echo $headercolor|cut -d":" -f 2)"
-  sed -i '/frame/c\
-        '"$rgb_color"'
-' $datadir/burp-browser-profiles-theme/manifest.json
+  perl -pi -e "s/^.*frame.*$/$rgb_color/" $datadir/burp-browser-profiles-theme/manifest.json
 
   extension_color="var color = \'$(echo $headercolor|cut -d":" -f 1)\';"
-  sed -i '/var color/c\
-        '"$extension_color"'
-' $datadir/burp-browser-profiles-extension/background.js
+  perl -pi -e "s/^.*frame.*$/$extension_color/" $datadir/burp-browser-profiles-extension/background.js
 
   loadextension_arg="--load-extension=$HOME/.BurpSuite/burp-chromium-extension,$datadir/burp-browser-profiles-theme,$datadir/burp-browser-profiles-extension"
 else
   if [[ -f "$datadir/Default/Preferences" ]] 
   then
-    sed -i 's/"theme[^}]*/"theme":{"use_system":true/' $datadir/Default/Preferences
+    perl -pi -e 's/"theme[^}]*/"theme":{"use_system":true/' $datadir/Default/Preferences
   fi
   loadextension_arg="--load-extension=$HOME/.BurpSuite/burp-chromium-extension"
 fi

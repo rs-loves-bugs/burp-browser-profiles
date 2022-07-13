@@ -8,7 +8,7 @@ burp-browser-profiles is a small shell script utility that will help you make be
 
 ## Features:
 
--allows you to create and mantain multiple Burp browser profiles
+-allows you to create and maintain multiple Burp browser profiles
 
 -allows you to run multiple Burp browser instances at the same time with different profiles
 
@@ -54,7 +54,7 @@ Syntax: ./burp-browser-profiles [options]
     -h                           Help
 ```
 
-Create and run a profile name testing:
+Create and run a profile named testing:
 ```
 ./burp-browser-profiles -P testing
 ```
