@@ -48,6 +48,7 @@ Syntax: ./burp-browser-profiles [options]
     -p <adress:port>             Specify a proxy server to use, will use localhost:8080 by default
     -c <color_name>              Specify a color to use(blue, cyan, green, yellow, orange, red, magenta, pink), no color is used by default
     -u <user_agent>              Specify an user agent to use
+    -x                           Disable the proxy
 
     -L                           List available profiles
     -D <profile_name>            Delete a profile
