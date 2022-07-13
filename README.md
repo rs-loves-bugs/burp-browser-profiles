@@ -16,7 +16,7 @@ burp-browser-profiles is a small shell script utility that will help you make be
 
 -allows you to specify a custom user agent for every Burp browser instance you have running
 
--allows you to differenciate the profiles between them with a different color used for the Burp browser window frame(blue, cyan, green, yellow, orange, red, magenta, pink)
+-allows you to differentiate the profiles between them with a different color used for the Burp browser window frame(blue, cyan, green, yellow, orange, red, magenta, pink)
 
 -allows you in Burp to highlight with the same color the request from that specific profile(this feature requires installing a Burp extension)
 
