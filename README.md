@@ -4,7 +4,8 @@
 
 burp-browser-profiles is a small shell script utility that will help you make better use of the embedded browser that comes by default with Burp. This is heavily inspired by [PwnFox](https://github.com/yeswehack/PwnFox), I wanted to have a similar tool to use with the embedded Burp browser
 
-[![Twitter Follow](https://img.shields.io/twitter/follow/rs_loves_bugs?style=flat-square)](https://twitter.com/rs_loves_bugs)
+[![Twitter](https://img.shields.io/badge/-@rs__loves__bugs-%232B90D9?style=for-the-badge&logo=twitter&logoColor=white&label=twitter)](https://twitter.com/rs_loves_bugs)&nbsp;
+[![Mastodon](https://img.shields.io/badge/-@rs__loves__bugs-%232B90D9?style=for-the-badge&logo=mastodon&logoColor=white&label=infosec.exchange)](https://infosec.exchange/@rs_loves_bugs)
 
 ## Features:
 
