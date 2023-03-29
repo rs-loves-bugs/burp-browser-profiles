@@ -21,6 +21,8 @@ burp-browser-profiles is a small shell script utility that will help you make be
 
 -allows you in Burp to highlight with the same color the request from that specific profile(this feature requires installing a Burp extension)
 
+-allows you to start the browser without remote debugging to try to bypass anti-bots checks 
+
 # Instalation:
 
 burp-browser-profiles was tested on Mac and Linux and will work with either Burp Professional or Burp Community Edition
@@ -50,6 +52,7 @@ Syntax: ./burp-browser-profiles [options]
     -c <color_name>              Specify a color to use(blue, cyan, green, yellow, orange, red, magenta, pink), no color is used by default
     -u <user_agent>              Specify an user agent to use
     -x                           Disable the proxy
+    -d                           Disable remote debugging
 
     -L                           List available profiles
     -D <profile_name>            Delete a profile
@@ -84,6 +87,11 @@ Open and run an existing profile with a custom proxy:
 Open and run an existing profile with no proxy settings:
 ```
 ./burp-browser-profiles -P testing -x
+```
+
+Open and run an existing profile without remote debugging:
+```
+./burp-browser-profiles -P testing -d
 ```
 
 Open and run an existing profile with a custom user agent:

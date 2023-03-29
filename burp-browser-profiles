@@ -9,6 +9,7 @@ Syntax: ./$(basename $0) [options]
     -c <color_name>              Specify a color to use(blue, cyan, green, yellow, orange, red, magenta, pink), no color is used by default
     -u <user_agent>              Specify an user agent to use
     -x                           Disable the proxy
+    -d                           Disable remote debugging
     
     -L                           List available profiles
     -D <profile_name>            Delete a profile
