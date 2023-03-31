@@ -22,12 +22,15 @@ EOM
 if [[ ! -d "$HOME/.BurpSuite/pre-wired-browser" ]]
 then
   echo "Can't find the Burp browser profile directory, you need to start the embedded browser once so it will be created(open Burp -> Proxy -> Open Browser). You will only need to do this once."
-  exit
+  exit 1
 fi
 
-proxyserver="127.0.0.1:8080"
+if ( ! getopts "xdhLp:u::P::c::D:" opt > /dev/null 2>&1); then
+  usage
+	exit 1
+fi
 
-while getopts ':p:u:h:P:c:LdxD:' opt; do
+while getopts "xdhLp:u::P::c::D:" opt; do
   case "$opt" in
     p)
       proxyserver="$OPTARG"
@@ -57,10 +60,10 @@ while getopts ':p:u:h:P:c:LdxD:' opt; do
       usage; exit
       ;;
     :)
-      echo -e "option requires an argument.\n"; usage; exit
+      echo -e "option $OPTARG requires an argument.\n"; usage; exit 1
       ;;
-    ?)
-      echo -e "Invalid command option.\n"; usage; exit
+    \?)
+      echo -e "Invalid command option $OPTARG\n"; usage; exit 1
       ;;
   esac
 done
@@ -69,13 +72,13 @@ shift "$(($OPTIND -1))"
 if [[ -n $proxyserver ]] && [[ -n ${noproxy+x} ]]
 then
   echo "Conflicting arguments, you can't run with both -p and -x arguments at the same time"
-  exit
+  exit 1
 fi 
 
 if [[ -z $profilename ]] && [[ ! -d "$HOME/.BurpSuite/burp-browser-profiles" ]]
 then
   echo "It looks like you did not created any profile yet, run the command again with -P profile_name to create a profile"
-  exit
+  exit 1
 fi
 
 if [[ -n ${listprofiles+x} ]]
@@ -93,7 +96,7 @@ then
     exit
   else
     echo "Profile does not exist"
-    exit
+    exit 1
   fi
 fi
 
@@ -161,6 +164,18 @@ else
   loadextension_arg="--load-extension=$HOME/.BurpSuite/burp-chromium-extension"
 fi
 
+proxyserver_arg="--proxy-server=127.0.0.1:8080"
+
+if [[ -n $proxyserver ]]
+then
+  proxyserver_arg="--proxy-server=$(echo $proxyserver)"
+fi
+
+if [[ -n ${noproxy+x} ]]
+then
+  proxyserver_arg=""
+fi
+
 if [[ -n $useragent ]]
 then
   useragent_arg="--user-agent=$(echo $useragent)"
@@ -178,12 +193,12 @@ then
   if [[ $? -eq 0 ]]
   then
     latest_browser_path="$(ls -td -- /Applications/Burp\ Suite\ */Contents/Resources/app/burpbrowser/* | head -n 1)/Chromium.app/Contents/MacOS/Chromium"
-    "$latest_browser_path" "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+    "$latest_browser_path" "$useragent_arg" "$proxyserver_arg" --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
   else
     latest_browser_path="$(ls -td -- $HOME/.BurpSuite/burpbrowser/* | head -n 1)/Chromium.app/Contents/MacOS/Chromium"
-    "$latest_browser_path" "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+    "$latest_browser_path" "$useragent_arg" "$proxyserver_arg" --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
   fi
 else
   latest_browser_path="$(ls -td -- $HOME/.BurpSuite/burpbrowser/* | head -n 1)/chrome"
-  "$latest_browser_path" "$useragent_arg" --proxy-server=$proxyserver --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --use-gl=angle --useangle=swiftshader-webgl --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
+  "$latest_browser_path" "$useragent_arg" "$proxyserver_arg" --proxy-bypass-list="<-loopback>" "$nodebugging_arg" --disable-ipc-flooding-protection --disable-xss-auditor --disable-bundled-ppapi-flash --disable-plugins-discovery --disable-default-apps --disable-prerender-local-predictor --disable-save-password-bubble --disable-sync --disable-audio-output --disable-breakpad --disable-crash-reporter --disable-prerender-local-predictor --disk-cache-size=0 --disable-settings-window --disable-notifications --disable-speech-api --disable-file-system --disable-presentation-api --disable-permissions-api --disable-new-zip-unpacker --disable-media-session-api --noerrdialogs --no-experiments --no-events --no-first-run --no-default-browser-check --no-pings --no-service-autorun --media-cache-size=0 --autoplay-policy=document-user-activation-required --overscroll-history-navigation=0 --use-fake-device-for-media-stream --dbus-stub --use-mock-keychain --disable-background-networking --use-gl=angle --useangle=swiftshader-webgl --disable-features=ChromeWhatsNewUI --user-data-dir=$datadir --disable-background-networking --disable-sync --ignore-certificate-errors $loadextension_arg --enable-crashpad chrome://newtab > /dev/null 2>&1 &
 fi
