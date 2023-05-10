@@ -322,6 +322,10 @@ if __name__ == "__main__":
     if not args.disable_remote_debugging:
         command.append(remote_debugging)
 
+    if args.user_agent:
+        user_agent = "--user-agent=" + args.user_agent
+        command.append(user_agent)
+
     data_dir = "--user-data-dir=" + os.path.join(
         burpsuite_path, "burp-browser-profiles", args.profile
     )
