@@ -1,8 +1,8 @@
-# burp-browser-profiles
+# burp-browser-profiles.py
 
 ![feature image](https://i.imgur.com/cOAlfyI.png)
 
-burp-browser-profiles is a small shell script utility that will help you make better use of the embedded browser that comes by default with Burp. This is heavily inspired by [PwnFox](https://github.com/yeswehack/PwnFox), I wanted to have a similar tool to use with the embedded Burp browser
+burp-browser-profiles.py is a small script utility that will help you make better use of the embedded browser that comes by default with Burp. This is heavily inspired by [PwnFox](https://github.com/yeswehack/PwnFox), I wanted to have a similar tool to use with the embedded Burp browser
 
 [![Twitter](https://img.shields.io/badge/-@rs__loves__bugs-%232B90D9?style=for-the-badge&logo=twitter&logoColor=white&label=twitter)](https://twitter.com/rs_loves_bugs)&nbsp;
 [![Mastodon](https://img.shields.io/badge/-@rs__loves__bugs-%232B90D9?style=for-the-badge&logo=mastodon&logoColor=white&label=infosec.exchange)](https://infosec.exchange/@rs_loves_bugs)
@@ -23,9 +23,9 @@ burp-browser-profiles is a small shell script utility that will help you make be
 
 -allows you to start the browser without remote debugging to try to bypass anti-bots checks 
 
-# Instalation:
+# Instalation and requirements:
 
-burp-browser-profiles was tested on Mac and Linux and will work with either Burp Professional or Burp Community Edition
+burp-browser-profiles.py was tested on Windows, Mac and Linux and will work with either Burp Professional or Burp Community Edition. You will need to have a working Python 3 installation(on Windows install from [here](https://www.microsoft.com/store/productId/9NRWMJP3717K), it won't work using Python from WSL) 
 
 ```
 git clone https://github.com/rs-loves-bugs/burp-browser-profiles
@@ -44,68 +44,76 @@ Sharpener - [link to BApp Store](https://portswigger.net/bappstore/3c5025b0e19d4
 Show the help menu:
 
 ```
-./burp-browser-profiles
-Syntax: ./burp-browser-profiles [options]
+python burp-browser-profiles.py
+usage: bbp.py [-h] [-P PROFILE] [-p [PROXY]]
+              [-c {blue,cyan,green,yellow,orange,red,magenta,pink}]
+              [-u USER_AGENT] [-x] [-d] [-L] [-D DELETE_PROFILE]
 
-    -P <profile_name> (required) Create or open a profile
-    -p <adress:port>             Specify a proxy server to use, will use localhost:8080 by default
-    -c <color_name>              Specify a color to use(blue, cyan, green, yellow, orange, red, magenta, pink), no color is used by default
-    -u <user_agent>              Specify an user agent to use
-    -x                           Disable the proxy
-    -d                           Disable remote debugging
+Burp Browser Profiles
 
-    -L                           List available profiles
-    -D <profile_name>            Delete a profile
-    -h                           Help
+options:
+  -h, --help            show this help message and exit
+  -P PROFILE, --profile PROFILE
+                        Create or open a profile
+  -p [PROXY], --proxy [PROXY]
+                        Specify a proxy server to use, will use 127.0.0.1:8080
+                        by default
+  -c {blue,cyan,green,yellow,orange,red,magenta,pink}, --color {blue,cyan,green,yellow,orange,red,magenta,pink}
+                        Specify a color to use
+  -u USER_AGENT, --user-agent USER_AGENT
+                        Specify an user agent to use
+  -x, --disable-proxy   Disable the proxy
+  -d, --disable-remote-debugging
+                        Disable remote debugging
+  -L, --list-profiles   Disable the proxy
+  -D DELETE_PROFILE, --delete-profile DELETE_PROFILE
+                        Delete a profile
 ```
 
 Create and run a profile named testing:
 ```
-./burp-browser-profiles -P testing
+python burp-browser-profiles.py -P testing
 ```
 
 List available profiles to use:
 ```
-./burp-browser-profiles -L
+python burp-browser-profiles.py -L
 ```
 
 Open and run an existing profile:
 ```
-./burp-browser-profiles -P testing
+python burp-browser-profiles.py -P testing
 ```
 
 Open and run an existing profile, use a color for the frame and highlight the requests from it:
 ```
-./burp-browser-profiles -P testing -c red
+python burp-browser-profiles.py -P testing -c red
 ```
 
 Open and run an existing profile with a custom proxy:
 ```
-./burp-browser-profiles -P testing -p localhost:9999
+python burp-browser-profiles.py -P testing -p localhost:9999
 ```
 
 Open and run an existing profile with no proxy settings:
 ```
-./burp-browser-profiles -P testing -x
+python burp-browser-profiles.py -P testing -x
 ```
 
 Open and run an existing profile without remote debugging:
 ```
-./burp-browser-profiles -P testing -d
+python burp-browser-profiles.py -P testing -d
 ```
 
 Open and run an existing profile with a custom user agent:
 ```
-./burp-browser-profiles -P testing -u "my user agent"
+python burp-browser-profiles.py -P testing -u "my user agent"
 ```
 
 Delete a profile:
 ```
-./burp-browser-profiles -D testing
+python burp-browser-profiles.py -D testing
 ```
-# TODO
-
-Port to a Burp extension
 
 
 
