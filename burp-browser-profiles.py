@@ -61,7 +61,7 @@ def cmdline_args():
         or ar.color
         or ar.user_agent
         or ar.disable_proxy
-        or ar.disable_remote_debugging
+        or ar.enable_remote_debugging
     ) and ar.profile is None:
         parser.error("-P/--profile is required when using this argument")
     else:
