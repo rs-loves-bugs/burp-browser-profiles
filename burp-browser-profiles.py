@@ -41,9 +41,9 @@ def cmdline_args():
     )
     parser.add_argument(
         "-d",
-        "--disable-remote-debugging",
+        "--enable-remote-debugging",
         action="store_true",
-        help="Disable remote debugging",
+        help="Enable remote debugging",
     )
     parser.add_argument(
         "-L", "--list-profiles", action="store_true", help="Disable the proxy"
@@ -319,7 +319,7 @@ if __name__ == "__main__":
         command.append(proxy)
 
     remote_debugging = "--remote-debugging-port=0"
-    if not args.disable_remote_debugging:
+    if args.enable_remote_debugging:
         command.append(remote_debugging)
 
     if args.user_agent:
@@ -364,9 +364,7 @@ if __name__ == "__main__":
         "--disable-plugins-discovery",
         "--disable-default-apps",
         "--disable-prerender-local-predictor",
-        "--disable-save-password-bubble",
         "--disable-sync",
-        "--disable-audio-output",
         "--disable-breakpad",
         "--disable-crash-reporter",
         "--disable-prerender-local-predictor",
@@ -379,7 +377,6 @@ if __name__ == "__main__":
         "--disable-permissions-api",
         "--disable-new-zip-unpacker",
         "--disable-media-session-api",
-        "--noerrdialogs",
         "--no-experiments",
         "--no-events",
         "--no-first-run",
@@ -387,16 +384,12 @@ if __name__ == "__main__":
         "--no-pings",
         "--no-service-autorun",
         "--media-cache-size=0",
-        "--autoplay-policy=document-user-activation-required",
-        "--overscroll-history-navigation=0",
         "--use-fake-device-for-media-stream",
         "--dbus-stub",
-        "--use-mock-keychain",
         "--disable-background-networking",
-        "--disable-features=ChromeWhatsNewUI",
+        "--disable-features=ChromeWhatsNewUI,HttpsUpgrades",
         "--proxy-bypass-list=<-loopback>",
         "--disable-background-networking",
-        "--disable-sync",
         "--ignore-certificate-errors",
         "chrome://newtab",
     ]
