@@ -21,8 +21,6 @@ burp-browser-profiles.py is a small script utility that will help you make bette
 
 -allows you in Burp to highlight with the same color the request from that specific profile(this feature requires installing a Burp extension)
 
--allows you to start the browser without remote debugging to try to bypass anti-bots checks 
-
 # Instalation and requirements:
 
 burp-browser-profiles.py was tested on Windows, Mac and Linux and will work with either Burp Professional or Burp Community Edition. You will need to have a working Python 3 installation(on Windows install from [here](https://www.microsoft.com/store/productId/9NRWMJP3717K), it won't work using Python from WSL) 
@@ -63,8 +61,8 @@ options:
   -u USER_AGENT, --user-agent USER_AGENT
                         Specify an user agent to use
   -x, --disable-proxy   Disable the proxy
-  -d, --disable-remote-debugging
-                        Disable remote debugging
+  -d, --enable-remote-debugging
+                        Enable remote debugging
   -L, --list-profiles   Disable the proxy
   -D DELETE_PROFILE, --delete-profile DELETE_PROFILE
                         Delete a profile
@@ -98,11 +96,6 @@ python burp-browser-profiles.py -P testing -p localhost:9999
 Open and run an existing profile with no proxy settings:
 ```
 python burp-browser-profiles.py -P testing -x
-```
-
-Open and run an existing profile without remote debugging:
-```
-python burp-browser-profiles.py -P testing -d
 ```
 
 Open and run an existing profile with a custom user agent:
