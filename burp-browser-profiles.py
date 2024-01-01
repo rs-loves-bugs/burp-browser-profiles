@@ -280,6 +280,12 @@ def reset_profile_color(profile_name):
 
 
 def chrome_binary_path():
+    if platform == "darwin":
+        if os.path.exists("/Applications/Burp Suite Professional.app/Contents/Resources/app/"):
+            burpsuite_path = "/Applications/Burp Suite Professional.app/Contents/Resources/app/"
+        else:    
+            if os.path.exists("/Applications/Burp Suite Community Edition.app/Contents/Resources/app/"):
+                burpsuite_path = "/Applications/Burp Suite Community Edition.app/Contents/Resources/app/"
     path = sorted(
         filter(
             os.path.isdir, Path(os.path.join(burpsuite_path, "burpbrowser")).iterdir()
@@ -367,7 +373,6 @@ if __name__ == "__main__":
         "--disable-sync",
         "--disable-breakpad",
         "--disable-crash-reporter",
-        "--disable-prerender-local-predictor",
         "--disk-cache-size=0",
         "--disable-settings-window",
         "--disable-notifications",
@@ -387,7 +392,7 @@ if __name__ == "__main__":
         "--use-fake-device-for-media-stream",
         "--dbus-stub",
         "--disable-background-networking",
-        "--disable-features=ChromeWhatsNewUI,HttpsUpgrades",
+        "--disable-features=ChromeWhatsNewUI,HttpsUpgrades,ImageServiceObserveSyncDownloadStatus",
         "--proxy-bypass-list=<-loopback>",
         "--disable-background-networking",
         "--ignore-certificate-errors",
